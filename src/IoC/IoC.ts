@@ -15,10 +15,12 @@ import { Driver } from '../Driver';
 import { MonkeyChallengeServer } from '../MonkeyChallengeServer';
 import { Laser } from '../Laser';
 import { Recorder } from '../Services/Recorder/Recorder';
+import { Record } from '../Services/Recorder/Record';
 import { IDateTimeProvider, DateTimeProvider } from '../Services/DateTimeProvider/DateTimeProvider';
 import { Config } from '../Services/Config/Config';
 import { Display } from '../Display';
 import { Repeater } from '../Services/Repeater/Repeater';
+import { IStorage, Storage } from '../Services/Storage/Storage';
 
 const IoC = new Container();
 
@@ -37,6 +39,7 @@ try
     IoC.bind<Laser>(Laser).toSelf().inSingletonScope().whenTargetIsDefault();
     IoC.bind<Display>(Display).toSelf().inSingletonScope().whenTargetIsDefault();
     IoC.bind<Recorder>(Recorder).toSelf().inSingletonScope().whenTargetIsDefault();
+    IoC.bind<IStorage<Record>>(Types.IStorage).to(Storage).inSingletonScope().whenTargetIsDefault();
 }
 catch (ex)
 {

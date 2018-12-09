@@ -6,6 +6,10 @@ import { Repeater } from "./Services/Repeater/Repeater";
 export class Display
 {
     private t = 0;
+    public set Value(val: number)
+    {
+        this._driver.IO.Display1.Value = val;
+    }
 
     constructor(
         private _driver: Driver,
@@ -38,15 +42,19 @@ export class Display
         }
     }
     
+    private backlightTimeoutHandler;
+    
     private SetBacklight(state)
     {
         if (state)
         {
             this._driver.IO.Pwm1.Value = 90;
+
+            clearTimeout(this.backlightTimeoutHandler);
         }
         else
         {
-            setTimeout(() =>
+            this.backlightTimeoutHandler = setTimeout(() =>
             {
                 this._driver.IO.Pwm1.Value = 990;
             }, 3000);

@@ -18,6 +18,6 @@ export class DateTimeProvider implements IDateTimeProvider
     {
         const now = new Date();
 
-        return `${ now.getFullYear() }-${ now.getMonth() }-${ now.getDate() }`;
+        return `${ now.getFullYear() }-${ now.getMonth()+1 }-${ now.getDate() }`;
     }
 }

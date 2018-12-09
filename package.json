@@ -9,6 +9,9 @@
         "node": "8.4.0",
         "npm": "5.3.0"
     },
+    "nodemonConfig": {
+        "ignore": ["./records"]
+    },
     "scripts": {
         "x_preinstall": "sudo npm i -g typescript jest tslint npm-run-all",
         "start": "node ./bin/startup.js",
