@@ -1,26 +1,25 @@
 import * as SocketClient from 'socket.io-client';
-import { Config } from './Services/Config/Config';
 import { injectable } from 'inversify';
 
 @injectable()
 export class MonkeyChallengeServer
 {
-    private client;
+    private socketClient;
 
-    constructor(private _config: Config)
+    constructor()
     {
-        const monkeyChallengeServerConnectionString = 'http://localhost:4000?clientType=monkey-proxy&id=' + this._config.MonkeyId;
+        const monkeyChallengeServerConnectionString = process.env.SERVER + '/monkey?id=' + process.env.ID;
         // const monkeyChallengeServerConnectionString = 'https://monkey-challenge-server.herokuapp.com?clientType=monkey-proxy';
-        this.client = SocketClient(monkeyChallengeServerConnectionString, { rejectUnauthorized: false });
+        this.socketClient = SocketClient(monkeyChallengeServerConnectionString, { rejectUnauthorized: false });
 
-        this.client.on('connect', () =>
+        this.socketClient.on('connect', () =>
         {                            
-            console.log('Connected to Monkey-Challenge-Server as', this.client.id);
+            console.log('Connected to Monkey-Challenge-Server as', this.socketClient.id);
         });
     }
 
     public SendSensorState(state)
     {
-        this.client.emit('laser', state);
+        this.socketClient.emit('update', state);
     }
 }
