@@ -22,7 +22,7 @@ export class Lasers
         {
             if (err) throw err;
             
-                      
+            this.sensorBChangeCallback?.(value);     
         });
     }
 

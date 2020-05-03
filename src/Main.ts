@@ -33,6 +33,8 @@ export class Main
         this._lasers.SensorBChange(state =>
         {
             led2.writeSync(state);
+            
+            this._server.SendSensorState({ SensorB: state });
         });
 
         // this._laser.OnStateChange(state =>
