@@ -21,6 +21,7 @@ import { Config } from '../Services/Config/Config';
 import { Display } from '../Display';
 import { Repeater } from '../Services/Repeater/Repeater';
 import { IStorage, Storage } from '../Services/Storage/Storage';
+import { Lasers } from '../Lasers';
 
 const IoC = new Container();
 
@@ -37,6 +38,7 @@ try
     IoC.bind<Config>(Config).toSelf().inSingletonScope().whenTargetIsDefault();
     IoC.bind<MonkeyChallengeServer>(MonkeyChallengeServer).toSelf().inSingletonScope().whenTargetIsDefault();
     IoC.bind<Laser>(Laser).toSelf().inSingletonScope().whenTargetIsDefault();
+    IoC.bind<Lasers>(Lasers).toSelf().inSingletonScope().whenTargetIsDefault();
     IoC.bind<Display>(Display).toSelf().inSingletonScope().whenTargetIsDefault();
     IoC.bind<Recorder>(Recorder).toSelf().inSingletonScope().whenTargetIsDefault();
     IoC.bind<IStorage<Record>>(Types.IStorage).to(Storage).inSingletonScope().whenTargetIsDefault();

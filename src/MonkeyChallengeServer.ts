@@ -15,6 +15,11 @@ export class MonkeyChallengeServer
         this.socketClient.on('connect', () =>
         {                            
             console.log('Connected to Monkey-Challenge-Server as', this.socketClient.id);
+        });      
+        
+        this.socketClient.on('disconnect', () =>
+        {                            
+            console.log('Disconnected from Monkey-Challenge-Server');
         });
     }
 
