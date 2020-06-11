@@ -13,7 +13,6 @@ import { IStartupArgs } from '../Services/Environment/IStartupArgs';
 import { StartupArgs } from '../Services/Environment/StartupArgs';
 import { Driver } from '../Driver';
 import { MonkeyChallengeServer } from '../MonkeyChallengeServer';
-import { Laser } from '../Laser';
 import { Recorder } from '../Services/Recorder/Recorder';
 import { Record } from '../Services/Recorder/Record';
 import { IDateTimeProvider, DateTimeProvider } from '../Services/DateTimeProvider/DateTimeProvider';
@@ -22,6 +21,7 @@ import { Display } from '../Display';
 import { Repeater } from '../Services/Repeater/Repeater';
 import { IStorage, Storage } from '../Services/Storage/Storage';
 import { Lasers } from '../Lasers';
+import { Leds } from '../Leds';
 
 const IoC = new Container();
 
@@ -37,8 +37,8 @@ try
     IoC.bind<Repeater>(Repeater).toSelf().inTransientScope().whenTargetIsDefault();
     IoC.bind<Config>(Config).toSelf().inSingletonScope().whenTargetIsDefault();
     IoC.bind<MonkeyChallengeServer>(MonkeyChallengeServer).toSelf().inSingletonScope().whenTargetIsDefault();
-    IoC.bind<Laser>(Laser).toSelf().inSingletonScope().whenTargetIsDefault();
     IoC.bind<Lasers>(Lasers).toSelf().inSingletonScope().whenTargetIsDefault();
+    IoC.bind<Leds>(Leds).toSelf().inSingletonScope().whenTargetIsDefault();
     IoC.bind<Display>(Display).toSelf().inSingletonScope().whenTargetIsDefault();
     IoC.bind<Recorder>(Recorder).toSelf().inSingletonScope().whenTargetIsDefault();
     IoC.bind<IStorage<Record>>(Types.IStorage).to(Storage).inSingletonScope().whenTargetIsDefault();

@@ -4,7 +4,7 @@ import { injectable } from 'inversify';
 @injectable()
 export class MonkeyChallengeServer
 {
-    private socketClient;
+    private readonly socketClient: SocketIOClient.Socket;
 
     constructor()
     {
@@ -14,17 +14,17 @@ export class MonkeyChallengeServer
 
         this.socketClient.on('connect', () =>
         {                            
-            console.log('Connected to Monkey-Challenge-Server as', this.socketClient.id);
+            console.log(`Connected to Monkey-Challenge-Server (${process.env.SERVER}) as ${this.socketClient.id}`);
         });      
         
         this.socketClient.on('disconnect', () =>
         {                            
-            console.log('Disconnected from Monkey-Challenge-Server');
+            console.log('Disconnected from', process.env.SERVER);
         });
     }
 
     public SendSensorState(state)
     {
         this.socketClient.emit('update', state);
-    }
+    } 
 }

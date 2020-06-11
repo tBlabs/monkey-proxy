@@ -18,6 +18,7 @@ export class Lasers
             
             this.sensorAChangeCallback?.(value);        
         });
+        
         this.button2.watch((err, value) =>
         {
             if (err) throw err;
