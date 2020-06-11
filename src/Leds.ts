@@ -9,8 +9,8 @@ export class Leds
 
     constructor()
     {
-        this.led1 = new Gpio(17, 'out');
-        this.led2 = new Gpio(18, 'out');
+        this.led1 = new Gpio(20, 'out');
+        this.led2 = new Gpio(21, 'out');
     }
 
     public Led1Toggle()
