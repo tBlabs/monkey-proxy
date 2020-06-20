@@ -1,73 +1,50 @@
-
-export class HelpBuilder
-{
-    private glossaries: { key: string; value: string; }[] = [];
-    private configs: { key: string; value: string; defaultValue: string; example: string; }[] = [];
-    private statuses: { key: string; value: string; }[] = [];
-    private apis: { url: string; purpose: string; }[] = [];
-
-    constructor(private appName: string)
-    { }
-
-    public Glossary(key: string, value: string): this
-    {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+class HelpBuilder {
+    constructor(appName) {
+        this.appName = appName;
+        this.glossaries = [];
+        this.configs = [];
+        this.statuses = [];
+        this.apis = [];
+        this.LineBreak = "<br /><br />";
+        this.NewLine = "<br />";
+    }
+    Glossary(key, value) {
         this.glossaries.push({ key, value });
-
         return this;
     }
-
-    public Config(key: string, value: string, defaultValue: string = "", example: string = ""): this
-    {
+    Config(key, value, defaultValue = "", example = "") {
         this.configs.push({ key, value, defaultValue, example });
-
         return this;
     }
-
-    public Status(key: string, value: () => string): this
-    {
+    Status(key, value) {
         this.statuses.push({ key, value: value() });
-
         return this;
     }
-
-    public Api(url: string, purpose: string): this
-    {
+    Api(url, purpose) {
         this.apis.push({ url, purpose });
-
         return this;
     }
-
-    private LineBreak = "<br /><br />";
-    private NewLine = "<br />";
-
-    private get Glossaries()
-    {
+    get Glossaries() {
         return `<dl>` + this.glossaries.map(d => `<dt style="font-weight: bold">${d.key}</dt><dd>${d.value}</dd>`).join('') + `</dl>`;
     }
-
-    private get Configs()
-    {
+    get Configs() {
         return `<table><tr><th>Key</th><th>Value</th><th>Default</th><th>Example</th></tr>`
             + this.configs.map(c => `<tr><td>${c.key}</td><td style="font-weight: bold">${c.value}</td><td>${c.defaultValue}</td><td>${c.example}</td></tr>`).join('')
             + `</table>`;
     }
-
-    private get Statuses()
-    {
+    get Statuses() {
         return `<table><tr><th>Indicator</th><th>Status</th></tr>`
             + this.statuses.map(s => `<tr><td>${s.key}</td><td>${s.value}</td></tr>`).join('')
             + `</table>`;
     }
-
-    private get Apis()
-    {
+    get Apis() {
         return `<table><tr><th>Url</th><th>Purpose</th></tr>`
             + this.apis.map(a => `<tr><td style="font-weight: bold"><a href=${a.url}>${a.url}</a></td><td>${a.purpose}</td></tr>`).join('')
             + `</table>`;
     }
-
-    public get Styles()
-    {
+    get Styles() {
         return `<style>
         div {
             padding: 18px;
@@ -100,14 +77,10 @@ export class HelpBuilder
         }
         </style>`;
     }
-
-    private Header(text: string)
-    {
+    Header(text) {
         return `<p>${text}</p>`;
     }
-
-    public ToString()
-    {
+    ToString() {
         return this.Styles
             + '<div>'
             + this.Header(`Welcom to ${this.appName}`)
@@ -123,3 +96,5 @@ export class HelpBuilder
             + '</div>';
     }
 }
+exports.HelpBuilder = HelpBuilder;
+//# sourceMappingURL=HelpBuilder.js.map

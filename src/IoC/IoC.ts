@@ -41,15 +41,16 @@ try
     IoC.bind<MonkeyChallengeServer>(MonkeyChallengeServer).toSelf().inSingletonScope().whenTargetIsDefault();
     if (process.env.PLATFORM === 'pi')
     {
-        IoC.bind<ISensors>(Types.ISensors).toSelf().inSingletonScope().whenTargetIsDefault();
-        IoC.bind<ILeds>(Types.ILeds).toSelf().inSingletonScope().whenTargetIsDefault();
+        IoC.bind<ISensors>(Types.ISensors).to(Sensors).inSingletonScope().whenTargetIsDefault();
+        IoC.bind<ILeds>(Types.ILeds).to(Leds).inSingletonScope().whenTargetIsDefault();
     }
     else if (process.env.PLATFORM === 'pc')
     {
         const s = (new Mock<ISensors>())
         s.setup(x=>x.SensorAChange(It.IsAny())).returns(0);
         s.setup(x=>x.SensorBChange(It.IsAny())).returns(0);
-        s.setup(x=>x.StateAsString).returns("A: x, B: x");
+        s.setup(x=>x.Sensor1State).returns(-1);
+        s.setup(x=>x.Sensor2State).returns(-1);
         IoC.bind<ISensors>(Types.ISensors).toConstantValue(s.object());
 
         const ledsMock = new Mock<ILeds>();
