@@ -21,7 +21,7 @@ export class Config
             this.config = JSON.parse(fs.readFileSync(this.ConfigFileDir, 'utf8'));
             console.log('Config', this.config);
         }
-        else console.log('config file not exists');
+        else console.log(`Config file "${this.ConfigFileDir}" not exists`);
     }
 
     public Save()
@@ -36,7 +36,7 @@ export class Config
 
     public set MonkeyId(value: string)
     {
-        this.config.MonkeyId = value;
+        this.config.MonkeyId = value; 
 
         this.Save();
     }

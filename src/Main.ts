@@ -3,51 +3,9 @@ import { MonkeyChallengeServer } from './MonkeyChallengeServer';
 import { Sensors, ISensors } from './Sensors';
 import { Leds, ILeds } from './Leds';
 import { Types } from './IoC/Types';
-import * as express from 'express';
-import * as cors from 'cors';
 import { Config } from './Services/Config/Config';
-
-@injectable()
-export class Server
-{
-    private server;
-
-    constructor()
-    {
-        this.server = express();
-        this.server.use(cors());
-
-        this.server.get('/ping', (req, res) => res.send('pong'));
-    }
-
-    public Start(port: number)
-    {
-        this.server.listen(port, () => console.log(`Monkey-Challenge-Driver server started @ http://localhost:${port}`));
-    }
-
-    public OnCommand(url, callback: (urlParams) => void)
-    {
-        this.server.get(url, (req, res) =>
-        {
-            callback(req.params);
-
-            res.sendStatus(200);
-        });
-    }
-
-    public OnQuery(url, callback: (req, res) => void)
-    {
-        this.server.get(url, (req, res) =>
-        {
-            callback(req, res);
-        });
-    }
-}
-
-export class HelpBuilder
-{
-
-}
+import { HelpBuilder } from './HelpBuilder';
+import { Server } from './Server';
 
 @injectable()
 export class Main
@@ -69,26 +27,22 @@ export class Main
 
         this._server.OnQuery('/', (req, res) =>
         {
-            // const help = new HelpBuilder();
+            const help = new HelpBuilder("MonkeyChallenge.Driver")
+                .Glossary("MCS", "Monkey Challenge Server")
+                .Glossary("MID", "Monkey ID - should be unique for every driver")
+                .Config("MID", this._config.MonkeyId, "empty string", "Monkey1")
+                .Config("MCS", this._config.MonkeyServer, "empty string", "http://server.addr")
+                .Config("Platform", process.env.PLATFORM, "undefined", "pc (for PC) / pi (for Raspberry Pi)")
+                .Config("Mode", process.env.MODE, "undefined", "dev / stage / test / prod")
+                .Config("Config file dir", process.env.CONFIG_FILE_DIR, "undefined", "~/MonkeyChallengeDriver.config")
+                .Status(`MCS (${this._config.MonkeyServer})`, () => this._monkeyChallengeServer.IsConnected ? "Connected as " + this._config.MonkeyId : "Not connected")
+                .Api('/reconnect', `Connect to another MCS defined in config (/set commands)`)
+                .Api('/set/id/:newId', `Change MID permanently`)
+                .Api('/set/server/:addr', ` Change MCS address permanently. User ! for a / sign. Then call /reconnect`);
 
-            // help.AppName("MonkeyChallenge.Driver");
-            // help.Definition("MCS", "Monkey Challenge Server");
-            // help.Status(`Connection to Monkey-Challenge-Server (${this._monkeyChallengeServer.ConnectionString})`, this._monkeyChallengeServer.IsConnected);
-            // help.Api('/reconnect', `connect to another Monkey-Challenge-Server defined in config (/set commands)`)
-
-            let r = `Welcom to MonkeyChallenge.Driver. This driver id is <b>${this._config.MonkeyId}</b>`;
-            r += '<br><br>';
-            r += `Connection to Monkey-Challenge-Server (${this._monkeyChallengeServer.ConnectionString}) status: ${this._monkeyChallengeServer.IsConnected ? "connected":"not connected"}`;
-            r += '<br>';
-            r += `Sensors state: ${this._sensors.StateAsString}`;
-            r += '<br><br>';
-            r += `Use <b>/reconnect</b> to connect to another Monkey-Challenge-Server defined in config (/set commands)<br>`;
-            r += `Use <b>/set/id/:newId</b> to change this driver id permanently<br>`;
-            r += `Use <b>/set/server/:addr</b> to change Monkey-Challenge-Server address permanently. User ! for a / sign. Then call /reconnect`;
-
-            // res.send(help.ToString());
-            res.send(r);
+            res.send(help.ToString());
         });
+        
         this._server.OnCommand('/set/id/:newId', params => this._config.MonkeyId = params.newId);
         this._server.OnCommand('/set/server/:addr', params => this._config.MonkeyServer = params.addr.replace(/!/g, "/"));
 
