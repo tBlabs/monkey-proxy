@@ -5,5 +5,6 @@ export const Types =
     ILogger: Symbol('ILogger'),
     IRunMode: Symbol('IRunMode'),
     IStartupArgs: Symbol('IStartupArgs'),
-    IStorage: Symbol('IStorage')
+    ISensors: Symbol('ISensors'),
+    ILeds: Symbol('ILeds'),
 };

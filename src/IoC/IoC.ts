@@ -8,7 +8,7 @@ import { IRunMode } from '../Services/RunMode/IRunMode';
 import { RunMode } from '../Services/RunMode/RunMode';
 import { ILogger } from '../Services/Logger/ILogger';
 import { Logger } from '../Services/Logger/Logger';
-import { Main } from '../Main';
+import { Main, Server } from '../Main';
 import { IStartupArgs } from '../Services/Environment/IStartupArgs';
 import { StartupArgs } from '../Services/Environment/StartupArgs';
 import { Driver } from '../Driver';
@@ -20,8 +20,9 @@ import { Config } from '../Services/Config/Config';
 import { Display } from '../Display';
 import { Repeater } from '../Services/Repeater/Repeater';
 import { IStorage, Storage } from '../Services/Storage/Storage';
-import { Lasers } from '../Lasers';
-import { Leds } from '../Leds';
+import { Sensors, ISensors } from '../Sensors';
+import { Leds, ILeds } from '../Leds';
+import { Mock, It } from "moq.ts";
 
 const IoC = new Container();
 
@@ -33,15 +34,26 @@ try
     IoC.bind<IStartupArgs>(Types.IStartupArgs).to(StartupArgs).inSingletonScope().whenTargetIsDefault();
     IoC.bind<IDateTimeProvider>(Types.IDateTimeProvider).to(DateTimeProvider).inTransientScope().whenTargetIsDefault();
     IoC.bind<Main>(Main).toSelf().inSingletonScope().whenTargetIsDefault();
-    IoC.bind<Driver>(Driver).toSelf().inSingletonScope().whenTargetIsDefault();
     IoC.bind<Repeater>(Repeater).toSelf().inTransientScope().whenTargetIsDefault();
     IoC.bind<Config>(Config).toSelf().inSingletonScope().whenTargetIsDefault();
+    IoC.bind<Server>(Server).toSelf().inSingletonScope().whenTargetIsDefault();
     IoC.bind<MonkeyChallengeServer>(MonkeyChallengeServer).toSelf().inSingletonScope().whenTargetIsDefault();
-    IoC.bind<Lasers>(Lasers).toSelf().inSingletonScope().whenTargetIsDefault();
-    IoC.bind<Leds>(Leds).toSelf().inSingletonScope().whenTargetIsDefault();
-    IoC.bind<Display>(Display).toSelf().inSingletonScope().whenTargetIsDefault();
-    IoC.bind<Recorder>(Recorder).toSelf().inSingletonScope().whenTargetIsDefault();
-    IoC.bind<IStorage<Record>>(Types.IStorage).to(Storage).inSingletonScope().whenTargetIsDefault();
+    if (process.env.PLATFORM === 'pi')
+    {
+        IoC.bind<ISensors>(Types.ISensors).toSelf().inSingletonScope().whenTargetIsDefault();
+        IoC.bind<ILeds>(Types.ILeds).toSelf().inSingletonScope().whenTargetIsDefault();
+    }
+    else if (process.env.PLATFORM === 'pc')
+    {
+        const s = (new Mock<ISensors>())
+        s.setup(x=>x.SensorAChange(It.IsAny())).returns(0);
+        s.setup(x=>x.SensorBChange(It.IsAny())).returns(0);
+        s.setup(x=>x.StateAsString).returns("A: x, B: x");
+        IoC.bind<ISensors>(Types.ISensors).toConstantValue(s.object());
+
+        const ledsMock = new Mock<ILeds>();
+        IoC.bind<ILeds>(Types.ILeds).toConstantValue(ledsMock.object());
+    }
 }
 catch (ex)
 {
