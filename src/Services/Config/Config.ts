@@ -2,26 +2,43 @@ import { injectable } from "inversify";
 import * as fs from 'fs';
 import * as path from 'path';
 
-export interface ConfigFile
+export class ConfigFile
 {
-    MonkeyId: string;
-    MonkeyChallengeServerAddr: string;
+    public MonkeyId: string = "";
+    public MonkeyChallengeServerAddr: string = "";
 }
 
 @injectable()
 export class Config
 {
     private ConfigFileDir = path.join(process.env.CONFIG_FILE_DIR || "", 'MonkeyChallengeDriver.config');
-    private config: ConfigFile = { MonkeyId: "", MonkeyChallengeServerAddr: "" };
+    private config: ConfigFile = new ConfigFile();
 
     public Load()
     {
         if (fs.existsSync(this.ConfigFileDir))
         {
-            this.config = JSON.parse(fs.readFileSync(this.ConfigFileDir, 'utf8'));
-            console.log('Config', this.config);
+            const configAsText = fs.readFileSync(this.ConfigFileDir, 'utf8');
+
+            try
+            {
+                this.config = JSON.parse(configAsText);
+            }
+            catch (error)
+            {
+                console.log(`Config file is invalid. Creating new one...`);
+                this.config = new ConfigFile();
+                this.Save();
+            }
         }
-        else console.log(`Config file "${this.ConfigFileDir}" not exists`);
+        else 
+        {
+            console.log(`Config file "${this.ConfigFileDir}" not exists. Creating empty one...`);
+            this.config = new ConfigFile();
+            this.Save();
+        }
+
+        console.log('Config from "' + this.ConfigFileDir + '" file:', this.config);
     }
 
     public Save()
@@ -36,7 +53,7 @@ export class Config
 
     public set MonkeyId(value: string)
     {
-        this.config.MonkeyId = value; 
+        this.config.MonkeyId = value;
 
         this.Save();
     }

@@ -35,7 +35,7 @@ export class Main
                 .Config("Platform (from env)", process.env.PLATFORM, "undefined", "pc (for PC) / pi (for Raspberry Pi)")
                 .Config("Mode (from env)", process.env.MODE, "undefined", "dev / stage / test / prod")
                 .Config("Config file dir (from env)", process.env.CONFIG_FILE_DIR, "undefined", "~/MonkeyChallengeDriver.config")
-                .Status(`MCS (${this._config.MonkeyServer})`, () => this._monkeyChallengeServer.IsConnected ? "Connected as " + this._config.MonkeyId : "Not connected")
+                .Status(`MCS (${this._config.MonkeyServer ? this._config.MonkeyServer : "not set"})`, () => this._monkeyChallengeServer.IsConnected ? "Connected as " + this._config.MonkeyId : "Not connected")
                 .Status(`Sensor A`, () => this._sensors.Sensor1State.toString())
                 .Status(`Sensor B`, () => this._sensors.Sensor2State.toString())
                 .Api('/reconnect', `Connect to another MCS defined in config (/set commands)`)

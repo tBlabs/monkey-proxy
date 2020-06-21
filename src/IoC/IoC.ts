@@ -12,15 +12,10 @@ import { Main } from '../Main';
 import { Server } from "../Server";
 import { IStartupArgs } from '../Services/Environment/IStartupArgs';
 import { StartupArgs } from '../Services/Environment/StartupArgs';
-import { Driver } from '../Driver';
 import { MonkeyChallengeServer } from '../MonkeyChallengeServer';
-import { Recorder } from '../Services/Recorder/Recorder';
-import { Record } from '../Services/Recorder/Record';
 import { IDateTimeProvider, DateTimeProvider } from '../Services/DateTimeProvider/DateTimeProvider';
 import { Config } from '../Services/Config/Config';
-import { Display } from '../Display';
 import { Repeater } from '../Services/Repeater/Repeater';
-import { IStorage, Storage } from '../Services/Storage/Storage';
 import { Sensors, ISensors } from '../Sensors';
 import { Leds, ILeds } from '../Leds';
 import { Mock, It } from "moq.ts";
@@ -46,6 +41,7 @@ try
     }
     else if (process.env.PLATFORM === 'pc')
     {
+        console.log('!!! YOU ARE IN A TEST MODE (PLATFORM=pc): SENSORS AND LEDS ARE NOT AVAILABLE HERE !!!');
         const s = (new Mock<ISensors>())
         s.setup(x=>x.SensorAChange(It.IsAny())).returns(0);
         s.setup(x=>x.SensorBChange(It.IsAny())).returns(0);
@@ -56,6 +52,7 @@ try
         const ledsMock = new Mock<ILeds>();
         IoC.bind<ILeds>(Types.ILeds).toConstantValue(ledsMock.object());
     }
+    else console.log('!!! PLATFORM NOT SELECTED. PLEASE CHOOSE pi OR pc IN .env FILE !!!');
 }
 catch (ex)
 {

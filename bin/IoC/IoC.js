@@ -35,6 +35,7 @@ try {
         IoC.bind(Types_1.Types.ILeds).to(Leds_1.Leds).inSingletonScope().whenTargetIsDefault();
     }
     else if (process.env.PLATFORM === 'pc') {
+        console.log('!!! YOU ARE IN A TEST MODE (PLATFORM=pc): SENSORS AND LEDS ARE NOT AVAILABLE HERE !!!');
         const s = (new moq_ts_1.Mock());
         s.setup(x => x.SensorAChange(moq_ts_1.It.IsAny())).returns(0);
         s.setup(x => x.SensorBChange(moq_ts_1.It.IsAny())).returns(0);
@@ -44,6 +45,8 @@ try {
         const ledsMock = new moq_ts_1.Mock();
         IoC.bind(Types_1.Types.ILeds).toConstantValue(ledsMock.object());
     }
+    else
+        console.log('!!! PLATFORM NOT SELECTED. PLEASE CHOOSE pi OR pc IN .env FILE !!!');
 }
 catch (ex) {
     console.log('IoC exception:', ex);

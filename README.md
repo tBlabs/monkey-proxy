@@ -1,4 +1,13 @@
-**Monkey-Proxy** is a junction between **laser sensor** (based on BluePill) and **monkey-challenge-server**
+# V1
+
+# V2
+
+- dołożyć lampke statusu połączenia
+- dołożyć czujnik C
+- dodać guzik do sterowania czymś
+- dodać buzer
+
+
 
 LEDs:
 GPIO 17, 18

@@ -9,18 +9,36 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const inversify_1 = require("inversify");
 const fs = require("fs");
 const path = require("path");
+class ConfigFile {
+    constructor() {
+        this.MonkeyId = "";
+        this.MonkeyChallengeServerAddr = "";
+    }
+}
+exports.ConfigFile = ConfigFile;
 let Config = class Config {
     constructor() {
         this.ConfigFileDir = path.join(process.env.CONFIG_FILE_DIR || "", 'MonkeyChallengeDriver.config');
-        this.config = { MonkeyId: "", MonkeyChallengeServerAddr: "" };
+        this.config = new ConfigFile();
     }
     Load() {
         if (fs.existsSync(this.ConfigFileDir)) {
-            this.config = JSON.parse(fs.readFileSync(this.ConfigFileDir, 'utf8'));
-            console.log('Config', this.config);
+            const configAsText = fs.readFileSync(this.ConfigFileDir, 'utf8');
+            try {
+                this.config = JSON.parse(configAsText);
+            }
+            catch (error) {
+                console.log(`Config file is invalid. Creating new one...`);
+                this.config = new ConfigFile();
+                this.Save();
+            }
         }
-        else
-            console.log(`Config file "${this.ConfigFileDir}" not exists`);
+        else {
+            console.log(`Config file "${this.ConfigFileDir}" not exists. Creating empty one...`);
+            this.config = new ConfigFile();
+            this.Save();
+        }
+        console.log('Config from "' + this.ConfigFileDir + '" file:', this.config);
     }
     Save() {
         fs.writeFileSync(this.ConfigFileDir, JSON.stringify(this.config));
